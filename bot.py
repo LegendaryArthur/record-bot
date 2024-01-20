@@ -9,7 +9,7 @@ dp = Dispatcher(bot=bot)
 
 
 main = ReplyKeyboardMarkup(resize_keyboard=True)
-main.add('1').add('2').add('3')
+main.add('оказываю услугу').add('получаю услугу')
 
 
 @dp.message_handler(commands=['start'])
