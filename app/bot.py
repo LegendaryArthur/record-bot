@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import  ReplyKeyboardMarkup
+from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+from app import database as db
 from dotenv import load_dotenv
 import os
 
@@ -7,6 +8,9 @@ load_dotenv()
 bot = Bot('6458498482:AAG7k9cg3p6b_L-ttV-U6r95v9yQiU_1_T4')
 dp = Dispatcher(bot=bot)
 
+async def on_startup(_):
+    await db.db_start()
+    print('Бот успешно запущен!')
 
 main = ReplyKeyboardMarkup(resize_keyboard=True)
 main.add('оказываю услугу').add('получаю услугу')
@@ -36,4 +40,4 @@ async def answer(message: types.Message):
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    executor.start_polling(dp, on_startup=on_startup)
