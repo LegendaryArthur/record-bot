@@ -3,8 +3,8 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.types import InlineKeyboardButton
 from dotenv import load_dotenv
 from aiogram.utils.callback_data import CallbackData
+from uuid import uuid4
 cb = CallbackData("post", "id", "action")
-import os
 
 
 load_dotenv()
@@ -20,38 +20,20 @@ main.add(InlineKeyboardButton('Принимаю услугу', callback_data='bt
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
     keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton(text="Оказываю услугу", callback_data="start_value"))
-    keyboard.add(types.InlineKeyboardButton(text="Принимаю услугу", callback_data="start_value"))
-    await message.answer("Выберите следующее", reply_markup=keyboard)
-    button = types.InlineKeyboardButton(text="Оказываю услугу", callback_data="start_value")
-    text = "Вы оказываете услуги! ",
-    callback_data = cb.new(id=5, action="rendering")
-    button = types.InlineKeyboardButton(text="Принимаю услугу", callback_data="start_value")
-    text = "Вы принимаете услуги! ",
-    callback_data = cb.new(id=5, action="adoption")
+    keyboard.add(types.InlineKeyboardButton(text='Оказываю услугу', callback_data="salesman"))
+    keyboard.add(types.InlineKeyboardButton(text='Принимаю услугу', callback_data="buyman"))
+    await message.answer('Выберите следующее', reply_markup=keyboard)
 
 
-@dp.callback_query_handler(text="start_value")
+@dp.callback_query_handler(text="salesman")
 async def send_start_value(call: types.CallbackQuery):
-    await call.message.answer("Вы выбрали")
+    rand_token = uuid4()
+    await call.message.answer(f"Вы выбрали оказывать услуги! Вот ваш уникальный токен: {rand_token}.\nПоделитесь этим токеном со своими клиентами, чтобы они могли записаться к вам!")
 
 
-@dp.message_handler(commands=['start'])
-async def cmd_start(message: types.Message):
-    await message.answer_sticker('CAACAgIAAxkBAAMGZZpEq7jJwkFLe-bGW7ilUq5bi8sAAjgLAAJO5JlLMrFH0tlPjNA0BA')
-    await message.answer(f'{message.from_user.first_name}, приветстсвую вас!',
-                         reply_markup=main)
-
-
-@dp.message_handler(content_types=['sticker'])
-async def check_sticker(message: types.Message):
-    await message.answer(message.sticker.file_id)
-    await bot.send_message(message.from_user.id, message.chat.id)
-
-
-@dp.message_handler(content_types=['document', 'photo'])
-async def forward_message(message: types.Message):
-    await bot.forward_message(os.getenv('GROUP_AD'), message.from_user.id, message.message_id)
+@dp.callback_query_handler(text="buyman")
+async def send_start_value(call: types.CallbackQuery):
+    await call.message.answer(f"Вы выбрали принимать услуги!")
 
 
 @dp.message_handler()
