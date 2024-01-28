@@ -40,6 +40,5 @@ async def send_start_value(call: types.CallbackQuery):
 async def answer(message: types.Message):
     await message.reply('Я не понимаю вас')
 
-
 if __name__ == '__main__':
     executor.start_polling(dp)
