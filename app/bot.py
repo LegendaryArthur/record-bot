@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup
+from app import keyboards as db
 from app import database as db
 from dotenv import load_dotenv
 import os
@@ -8,9 +9,11 @@ load_dotenv()
 bot = Bot('6458498482:AAG7k9cg3p6b_L-ttV-U6r95v9yQiU_1_T4')
 dp = Dispatcher(bot=bot)
 
+
 async def on_startup(_):
     await db.db_start()
     print('Бот успешно запущен!')
+
 
 main = ReplyKeyboardMarkup(resize_keyboard=True)
 main.add('оказываю услугу').add('получаю услугу')
@@ -20,7 +23,7 @@ main.add('оказываю услугу').add('получаю услугу')
 async def cmd_start(message: types.Message):
     await message.answer_sticker('CAACAgIAAxkBAAMGZZpEq7jJwkFLe-bGW7ilUq5bi8sAAjgLAAJO5JlLMrFH0tlPjNA0BA')
     await message.answer(f'{message.from_user.first_name}, приветстсвую вас!',
-                         reply_markup=main)
+                         reply_markup=db.main)
 
 
 @dp.message_handler(content_types=['sticker'])

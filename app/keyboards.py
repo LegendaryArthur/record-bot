@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup
 
 main = ReplyKeyboardMarkup(resize_keyboard=True)
 main.add('оказываю услугу').add('получаю услугу')
