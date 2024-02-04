@@ -4,13 +4,14 @@ from aiogram.types import InlineKeyboardButton
 from dotenv import load_dotenv
 from aiogram.utils.callback_data import CallbackData
 from uuid import uuid4
-cb = CallbackData("post", "id", "action")
+import sqlite3
 
 
-load_dotenv()
 bot = Bot('6458498482:AAG7k9cg3p6b_L-ttV-U6r95v9yQiU_1_T4')
 dp = Dispatcher(bot=bot)
 
+extensions = ("PlannersPalBot", "PlannersPalBot")
+# dispatcher.middleware_handler.extend(extensions)
 
 main = InlineKeyboardMarkup(row_width=2)
 main.add(InlineKeyboardButton('Оказываю услугу', callback_data='btn1'))
@@ -28,12 +29,23 @@ async def cmd_start(message: types.Message):
 @dp.callback_query_handler(text="salesman")
 async def send_start_value(call: types.CallbackQuery):
     rand_token = uuid4()
-    await call.message.answer(f"Вы выбрали оказывать услуги! Вот ваш уникальный токен: {rand_token}.\nПоделитесь этим токеном со своими клиентами, чтобы они могли записаться к вам!")
+    await call.message.answer(f"Вы выбрали оказывать услуги! Вот ваш уникальный токен: {rand_token}.\n"f"Поделитесь этим токеном со своими клиентами, чтобы они могли записаться к вам!")
 
 
 @dp.callback_query_handler(text="buyman")
 async def send_start_value(call: types.CallbackQuery):
     await call.message.answer(f"Вы выбрали принимать услуги!")
+
+
+@dp.message_handler(commands="help")
+async def on_message(message):
+    data = {
+            f'username': ("username"),
+            f'id': ("user.id"),
+            f'date_entry': None,
+            f'phone_number': None
+        }
+    await message.answer('Спасибо за предоставленную информацию!')
 
 
 @dp.message_handler()
