@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardButton
 from dotenv import load_dotenv
 from aiogram.utils.callback_data import CallbackData
 from uuid import uuid4
-import sqlite3
+from sqlite import db_start, create_profile, edit_profile
 
 
 bot = Bot('6458498482:AAG7k9cg3p6b_L-ttV-U6r95v9yQiU_1_T4')
@@ -40,8 +40,8 @@ async def send_start_value(call: types.CallbackQuery):
 @dp.message_handler(commands="help")
 async def on_message(message):
     data = {
-            f'username': ("username"),
-            f'id': ("user.id"),
+            f'username': ("user.id"),
+            f'id': ("username"),
             f'date_entry': None,
             f'phone_number': None
         }
