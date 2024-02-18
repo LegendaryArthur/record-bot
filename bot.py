@@ -3,27 +3,20 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.types import InlineKeyboardButton
 from dotenv import load_dotenv
 from aiogram.utils.callback_data import CallbackData
-from uuid import uuid4
 from sqlite import db_start, create_profile, edit_profile
+from config import TOKEN
 
-
-bot = Bot('6458498482:AAG7k9cg3p6b_L-ttV-U6r95v9yQiU_1_T4')
+bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot)
 
-extensions = ("PlannersPalBot", "PlannersPalBot")
-# dispatcher.middleware_handler.extend(extensions)
-
-main = InlineKeyboardMarkup(row_width=2)
-main.add(InlineKeyboardButton('Оказываю услугу', callback_data='btn1'))
-main.add(InlineKeyboardButton('Принимаю услугу', callback_data='btn2'))
+start_keyboard = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton('Оставить заявку', callback_data='new'))
 
 
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton(text='Оказываю услугу', callback_data="salesman"))
-    keyboard.add(types.InlineKeyboardButton(text='Принимаю услугу', callback_data="buyman"))
-    await message.answer('Выберите следующее', reply_markup=keyboard)
+    db_start()
+    message.from_user.last_name + message.from_user.first_name_name
+    await message.answer('Привет, здесь ты можешь оставить заявку на обучение в "Octopus"', )
 
 
 @dp.callback_query_handler(text="salesman")
