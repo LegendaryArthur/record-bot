@@ -1,20 +1,20 @@
 import sqlite3 as sq
 
 
-async def db_start():
+def db_start():
     global db, cur
 
     db = sq.connect('new.db')
     cur = db.cursor()
 
     cur.execute("CREATE TABLE IF NOT EXISTS users("
-                "chat_id INTEGER PRIMARY KEY, "
+                "chat_id INTEGER, "B
                 "user_name TEXT, "
                 "fullname TEXT)")
 
     db.commit()
 
-    cur.execute("CREATE TABLE IF NOT EXISTS requests("
+    cur.execute("CREATE TABLE IF NOT EXISTS requests("  
                 "id INTEGER,"
                 "chat_id INTEGER,"
                 "fullname TEXT,"
@@ -23,12 +23,12 @@ async def db_start():
                 "school TEXT,"
                 "class TEXT,"
                 "phone_number INTEGER,"
-                "description TEXT")
+                "description TEXT)")
     db.commit()
 
 
 async def add_user(message):
-    cur.execute("INSERT OR IGNORE INTO users (chat_id, user_name, fullname) VALUES (?, ?, ?)", (message.chat.id, message.from_user.username, message.from_user.last_name + message.from_user.first_name_name))
+    cur.execute("INSERT OR IGNORE INTO users (chat_id, user_name, fullname) VALUES (?, ?, ?)", (message.chat.id, message.from_user.username, str(message.from_user.last_name) + str(message.from_user.first_name)))
     db.commit()
 
 async def add_request(chat_id, fullname, age, section, school, klass, phone_number, description):
