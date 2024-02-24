@@ -26,6 +26,9 @@ async def edit_profile(state, user_id):
         db.commit()
 
 
+def add_user():
+    return None
 
 
-
+def add_request():
+    return None
