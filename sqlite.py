@@ -8,7 +8,7 @@ def db_start():
     cur = db.cursor()
 
     cur.execute("CREATE TABLE IF NOT EXISTS users("
-                "chat_id INTEGER, "B
+                "chat_id INTEGER, "
                 "user_name TEXT, "
                 "fullname TEXT)")
 
