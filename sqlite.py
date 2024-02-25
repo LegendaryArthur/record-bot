@@ -1,30 +1,41 @@
 import sqlite3 as sq
 
 
-async def db_start():
+def db_start():
     global db, cur
 
-    dp = sq.connect('new.db')
+    db = sq.connect('new.db')
     cur = db.cursor()
 
-    cur.execute("CREATE TABLE IF NOT EXISTS profile(user_id TEXT PRIMARY KEY, user_name TEXT, date_entry NONE, phone_number NONE)")
+    cur.execute("CREATE TABLE IF NOT EXISTS users("
+                "chat_id INTEGER, "B
+                "user_name TEXT, "
+                "fullname TEXT)")
 
     db.commit()
 
+    cur.execute("CREATE TABLE IF NOT EXISTS requests("  
+                "id INTEGER,"
+                "chat_id INTEGER,"
+                "fullname TEXT,"
+                "age INTEGER,"
+                "section TEXT"
+                "school TEXT,"
+                "class TEXT,"
+                "phone_number INTEGER,"
+                "description TEXT)")
+    db.commit()
 
-async def create_profile():
-    user = cur.execute("SELECT 1 FROM profile WHERE user_id == '{key}'".format(key="user_id")).fetchore()
-    if not user:
-        cur.execute("INSERT INTO profile VALUES(?, ?, ?, ?, ?", ("user_id", '', '', '', ''))
-        db.commit()
 
+async def add_user(message):
+    cur.execute("INSERT OR IGNORE INTO users (chat_id, user_name, fullname) VALUES (?, ?, ?)", (message.chat.id, message.from_user.username, str(message.from_user.last_name) + str(message.from_user.first_name)))
+    db.commit()
 
-async def edit_profile(state, user_id):
-    async with state.proxy() as data:
-        cur.execute("UPDATE profile WHERE user_id == '{}' SET user_name = '{}', date_entry = '{}', phone_number = '{}'".format(
-            user_id, data['user_name'], data['date_entry'], data['phone_number']))
-        db.commit()
+async def add_request(chat_id, fullname, age, section, school, klass, phone_number, description):
+    cur.execute("INSERT INTO requests (chat_id, fullname, age, section, school, class, phone_number, description) VALUES (?, ?, ?, ?, ?, ?, ?", (chat_id, fullname, age, section, school, klass, phone_number, description))
+    db.commit()
 
+db_start()
 
 def add_user():
     return None
