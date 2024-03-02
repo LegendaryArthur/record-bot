@@ -8,7 +8,7 @@ import datebase
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
-
+import datetime
 
 start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку')
 napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Коммерческий дизайн')
@@ -31,6 +31,7 @@ class StartState(StatesGroup):
     wait_napravlenie = State()
 class ZayavkaState(StatesGroup):
     wait_FIO = State()
+    wait_Photo = State()
     wait_School = State()
     wait_Class = State()
     wait_Vozvrast = State()
@@ -49,6 +50,7 @@ class ZayavkaState(StatesGroup):
     wait_Progress = State()
     wait_KakayaLichnoct = State()
     wait_Konec = State()
+    wait_Confirmation = State()
 
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
@@ -149,9 +151,20 @@ async def napravlenie_info(message: types.Message, state: FSMContext):
 @dp.message_handler(state=ZayavkaState.wait_FIO)
 async def fio(message: types.Message, state: FSMContext):
     await state.update_data(fio=message.text)
-    await message.answer("В какой школе вы обучаетесь?", reply_markup=schools_keyboard)
-    await ZayavkaState.wait_School.set()
 
+    await message.answer("Пришлите свою фотографию:", reply_markup=None)
+    await ZayavkaState.wait_Photo.set()
+@dp.message_handler(state=ZayavkaState.wait_Photo)
+async def photo(message: types.Message, state: FSMContext):
+
+    if not message.photo:
+        await message.answer('Отправьте свою фотографию')
+    else:
+        await state.update_data(chat_id=message.chat.id)
+        await state.update_data(username=message.from_user.username)
+        await state.update_data(photo=message.photo[-1].file_id)
+        await message.answer("В какой школе вы обучаетесь?", reply_markup=schools_keyboard)
+        await ZayavkaState.wait_School.set()
 @dp.message_handler(state=ZayavkaState.wait_School)
 async def school(message: types.Message, state: FSMContext):
     await state.update_data(school=message.text)
@@ -221,7 +234,7 @@ async def kemstanesh(message: types.Message, state: FSMContext):
 @dp.message_handler(state=ZayavkaState.wait_KemStanesh)
 async def lvlpc(message: types.Message, state: FSMContext):
     await state.update_data(kemstanesh=message.text)
-    await message.answer("Уровень владения компьютером (1 - Что такое компьютер? 10 - Генний):", reply_markup=lvlpc_keyboard)
+    await message.answer("Уровень владения компьютером (1 - Что такое компьютер? 10 - Гений):", reply_markup=lvlpc_keyboard)
     await ZayavkaState.wait_LVLPC.set()
 
 @dp.message_handler(state=ZayavkaState.wait_LVLPC)
@@ -251,7 +264,17 @@ async def kakayalichnoct(message: types.Message, state: FSMContext):
 @dp.message_handler(state=ZayavkaState.wait_KakayaLichnoct)
 async def konec(message: types.Message, state: FSMContext):
     await state.update_data(lichnost=message.text)
-    await message.answer("Спасибо за оставленную заявку:)", reply_markup=None)
+
+    data = await state.get_data()
+    await ZayavkaState.wait_Confirmation.set()
+
+    await bot.send_photo(data["chat_id"], photo=data['photo'], caption=f"Ваша заявка:\nФИО: {data['fio']}\nШКОЛА:{data['school']}\nКЛАСС:{data['class_']}\nВОЗРАСТ:{data['vozvrast']}\nУСПЕВАЕМОСТЬ:{data['yspevaimoct']}\nНОМЕР ТЕЛЕФОНА:{data['NumberPhone']}\nСОЦ.СЕТИ:{data['provilSotSety']}\n", reply_markup=None)
+
+@dp.message_handler(state=ZayavkaState.wait_Confirmation)
+async def konec(message: types.Message, state: FSMContext):
+    date = datetime.datetime.now()
+    data = await state.get_data()
+    await datebase.add_zapis(date, data)
 
 
 
