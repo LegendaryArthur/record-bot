@@ -268,7 +268,7 @@ async def konec(message: types.Message, state: FSMContext):
     data = await state.get_data()
     await ZayavkaState.wait_Confirmation.set()
 
-    await bot.send_photo(data["chat_id"], photo=data['photo'], caption=f"Ваша заявка:\nФИО: {data['fio']}\nШКОЛА:{data['school']}\nКЛАСС:{data['class_']}\nВОЗРАСТ:{data['vozvrast']}\nУСПЕВАЕМОСТЬ:{data['yspevaimoct']}\nНОМЕР ТЕЛЕФОНА:{data['NumberPhone']}\nСОЦ.СЕТИ:{data['provilSotSety']}\n", reply_markup=None)
+    await bot.send_photo(data["chat_id"], photo=data['photo'], caption=f"Ваша заявка:\nФИО: {data['fio']}\nШКОЛА:{data['school']}\nКЛАСС:{data['class_']}\nВОЗРАСТ:{data['vozvrast']}\nУСПЕВАЕМОСТЬ:{data['yspevaimoct']}\nНОМЕР ТЕЛЕФОНА:{data['NumberPhone']}\nСОЦ.СЕТИ:{data['provilSotSety']}\nНАПРАВЛЕНИЕ 1:{data['napravlenie1']}\nНАПРАВЛЕНИЕ 2:{data['napravlenie2']}\nСЛЫШАЛ ЛИ ТЫ ОБ ОКТОПУСЕ:{data['slyxiObOctopus']}\nТВОЯ СМЕНА:{data['kakayasmena']}\nТВОИ ДОП.КРУЖКИ:{data['kakiyekrushki']}\nТОТ КЕМ ТЫ ХОЧЕШЬ СТАТЬ:{data['kemstanesh']}\nУРОВЕНЬ ВЛАДЕНИЯ КОМПЬЮТЕРОМ:{data['lvlpc']}\nТВОЁ УЧАСТИЕ В ПРОЕКТАХ:{data['YchastieVProject']}\nТВОЁ ЗАТРАЧЕННОЕ ВРЕМЯ НА ДОМАШКУ:{data['timedz']}\nМНЕНИЕ ЧТО ТАКОЕ ПРОГРЕСС:{data['progress']}\nУНИКАЛЬНАЯ ЛИЧНОСТЬ:{data['lichnost']}\n", reply_markup=None)
 
 @dp.message_handler(state=ZayavkaState.wait_Confirmation)
 async def konec(message: types.Message, state: FSMContext):
