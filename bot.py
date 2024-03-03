@@ -5,6 +5,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from config import TOKEN
 from aiogram.dispatcher.filters.state import State, StatesGroup
 import datebase
+ADMIN_ID = 1295289083
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
@@ -24,7 +25,7 @@ schools_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2).add('�
 otvet_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Да').add('Нет')
 lvlpc_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, row_width=5).add('1').add('2').add('3').add('4').add('5').add('6').add('7').add('8').add('9').add('10')
 smena_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('В первую').add('Во вторую')
-
+pravilno_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Да, всё правильно').add('Нет, не правильно')
 
 class StartState(StatesGroup):
     wait_command = State()
@@ -51,6 +52,7 @@ class ZayavkaState(StatesGroup):
     wait_KakayaLichnoct = State()
     wait_Konec = State()
     wait_Confirmation = State()
+    wait_Pravilno = State()
 
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
@@ -58,6 +60,9 @@ async def cmd_start(message: types.Message):
     await message.answer('Привет, здесь ты можешь оставить заявку на обучение в "Octopus" и узнать о всех направлениях, которые у нас есть.', reply_markup=start_keyboard)
     await StartState.wait_command.set()
 
+@dp.message_handler(commands='id')
+async def cmd_id(message: types.Message):
+    await message.answer(message.chat.id)
 
 @dp.message_handler(state=StartState.wait_command)
 async def napravlenie(message: types.Message, state: FSMContext):
@@ -154,17 +159,17 @@ async def fio(message: types.Message, state: FSMContext):
 
     await message.answer("Пришлите свою фотографию:", reply_markup=None)
     await ZayavkaState.wait_Photo.set()
-@dp.message_handler(state=ZayavkaState.wait_Photo)
+@dp.message_handler(state=ZayavkaState.wait_Photo, content_types=['text', 'photo'])
 async def photo(message: types.Message, state: FSMContext):
-
-    if not message.photo:
-        await message.answer('Отправьте свою фотографию')
-    else:
+    if message.photo:
         await state.update_data(chat_id=message.chat.id)
         await state.update_data(username=message.from_user.username)
         await state.update_data(photo=message.photo[-1].file_id)
         await message.answer("В какой школе вы обучаетесь?", reply_markup=schools_keyboard)
         await ZayavkaState.wait_School.set()
+    else:
+
+        await message.answer('Отправьте свою фотографию')
 @dp.message_handler(state=ZayavkaState.wait_School)
 async def school(message: types.Message, state: FSMContext):
     await state.update_data(school=message.text)
@@ -267,16 +272,21 @@ async def konec(message: types.Message, state: FSMContext):
 
     data = await state.get_data()
     await ZayavkaState.wait_Confirmation.set()
-
     await bot.send_photo(data["chat_id"], photo=data['photo'], caption=f"Ваша заявка:\nФИО: {data['fio']}\nШКОЛА:{data['school']}\nКЛАСС:{data['class_']}\nВОЗРАСТ:{data['vozvrast']}\nУСПЕВАЕМОСТЬ:{data['yspevaimoct']}\nНОМЕР ТЕЛЕФОНА:{data['NumberPhone']}\nСОЦ.СЕТИ:{data['provilSotSety']}\nНАПРАВЛЕНИЕ 1:{data['napravlenie1']}\nНАПРАВЛЕНИЕ 2:{data['napravlenie2']}\nСЛЫШАЛ ЛИ ТЫ ОБ ОКТОПУСЕ:{data['slyxiObOctopus']}\nТВОЯ СМЕНА:{data['kakayasmena']}\nТВОИ ДОП.КРУЖКИ:{data['kakiyekrushki']}\nТОТ КЕМ ТЫ ХОЧЕШЬ СТАТЬ:{data['kemstanesh']}\nУРОВЕНЬ ВЛАДЕНИЯ КОМПЬЮТЕРОМ:{data['lvlpc']}\nТВОЁ УЧАСТИЕ В ПРОЕКТАХ:{data['YchastieVProject']}\nТВОЁ ЗАТРАЧЕННОЕ ВРЕМЯ НА ДОМАШКУ:{data['timedz']}\nМНЕНИЕ ЧТО ТАКОЕ ПРОГРЕСС:{data['progress']}\nУНИКАЛЬНАЯ ЛИЧНОСТЬ:{data['lichnost']}\n", reply_markup=None)
+    await message.answer("Заявка заполнена, Проверьте всё ли правильно:", reply_markup=pravilno_keyboard)
 
+    await ZayavkaState.wait_Confirmation.set()
 @dp.message_handler(state=ZayavkaState.wait_Confirmation)
-async def konec(message: types.Message, state: FSMContext):
-    date = datetime.datetime.now()
-    data = await state.get_data()
-    await datebase.add_zapis(date, data)
+async def Confirmation(message: types.Message, state: FSMContext):
+    if message.text == 'Да, всё правильно':
 
-
+        date = datetime.datetime.now()
+        data = await state.get_data()
+        await datebase.add_zapis(date, data)
+        await bot.send_photo(ADMIN_ID, photo=data['photo'], caption=f"Новая заявка:\nФИО: {data['fio']}\nШКОЛА:{data['school']}\nКЛАСС:{data['class_']}\nВОЗРАСТ:{data['vozvrast']}\nУСПЕВАЕМОСТЬ:{data['yspevaimoct']}\nНОМЕР ТЕЛЕФОНА:{data['NumberPhone']}\nСОЦ.СЕТИ:{data['provilSotSety']}\nНАПРАВЛЕНИЕ 1:{data['napravlenie1']}\nНАПРАВЛЕНИЕ 2:{data['napravlenie2']}\nСЛЫШАЛ ЛИ ТЫ ОБ ОКТОПУСЕ:{data['slyxiObOctopus']}\nТВОЯ СМЕНА:{data['kakayasmena']}\nТВОИ ДОП.КРУЖКИ:{data['kakiyekrushki']}\nТОТ КЕМ ТЫ ХОЧЕШЬ СТАТЬ:{data['kemstanesh']}\nУРОВЕНЬ ВЛАДЕНИЯ КОМПЬЮТЕРОМ:{data['lvlpc']}\nТВОЁ УЧАСТИЕ В ПРОЕКТАХ:{data['YchastieVProject']}\nТВОЁ ЗАТРАЧЕННОЕ ВРЕМЯ НА ДОМАШКУ:{data['timedz']}\nМНЕНИЕ ЧТО ТАКОЕ ПРОГРЕСС:{data['progress']}\nУНИКАЛЬНАЯ ЛИЧНОСТЬ:{data['lichnost']}\n", reply_markup=None)
+        await state.finish()
+    elif message.text == 'Нет, не правильно':
+        await message.answer("Если вы обнаружили ошибки в своей заявке, пожалуйста заполните её занового нажав команду /start")
 
 
 
@@ -293,4 +303,4 @@ async def answer(message: types.Message):
     await message.reply('Я не понимаю вас')
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    executor.start_polling(dp, skip_updates=True)

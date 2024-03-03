@@ -6,7 +6,7 @@ async def db_start():
                 "chat_id INTEGER PRIMARY KEY, "
                 "username TEXT)")
     cur.execute("CREATE TABLE IF NOT EXISTS zayavki("
-                "chat_id INTEGER PRIMARY KEY,"
+                "chat_id INTEGER,"
                 "username INTEGER,"
                 "date DATE, "
                 "fio TEXT, "
