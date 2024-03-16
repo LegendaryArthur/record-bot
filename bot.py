@@ -70,7 +70,7 @@ async def napravlenie(message: types.Message, state: FSMContext):
         await message.answer("Информацию о каком направлении вы хотите узнать?", reply_markup=napravlenie_keyboard)
         await StartState.wait_napravlenie.set()
     elif message.text == "Оставить заявку":
-        await message.answer('Заполни анкету и попади в команжу "OCTOPUS"! \n Для начала напишите ФИО')
+        await message.answer('Заполни анкету и попади в команду "OCTOPUS"! \n Для начала напишите ФИО')
         await state.finish()
         await ZayavkaState.wait_FIO.set()
 
