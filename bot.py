@@ -11,9 +11,10 @@ bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 import datetime
 
-start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку')
+start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку').add('Наставники всех направлений')
 napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Коммерческий дизайн')
 zayavka_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Готов')
+nastavniki_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Наставник по Python')
 napravlenie_keyboard.add('Wed-разработка')
 napravlenie_keyboard.add('Unity')
 napravlenie_keyboard.add('Python')
@@ -30,6 +31,7 @@ pravilno_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Да, всё 
 class StartState(StatesGroup):
     wait_command = State()
     wait_napravlenie = State()
+    wait_nastavniki = State()
 class ZayavkaState(StatesGroup):
     wait_FIO = State()
     wait_Photo = State()
@@ -53,11 +55,11 @@ class ZayavkaState(StatesGroup):
     wait_Konec = State()
     wait_Confirmation = State()
     wait_Pravilno = State()
-
+    wait_Nastavniki = State()
 @dp.message_handler(commands="start")
 async def cmd_start(message: types.Message):
     await datebase.db_start()
-    await message.answer('Привет, здесь ты можешь оставить заявку на обучение в "Octopus" и узнать о всех направлениях, которые у нас есть.', reply_markup=start_keyboard)
+    await message.answer('Привет, здесь ты можешь оставить заявку на обучение в "Octopus" и узнать о всех направлениях, которые у нас есть, а также ты можешь ознакомится с каждым наставником всех направлений.', reply_markup=start_keyboard)
     await StartState.wait_command.set()
 
 @dp.message_handler(commands='id')
@@ -69,10 +71,24 @@ async def napravlenie(message: types.Message, state: FSMContext):
     if message.text == "Направление":
         await message.answer("Информацию о каком направлении вы хотите узнать?", reply_markup=napravlenie_keyboard)
         await StartState.wait_napravlenie.set()
+    elif message.text == 'Наставники всех направлений':
+        await message.answer("О каком наставнике вы хотите узнать?", reply_markup=nastavniki_keyboard)
+        await  StartState.wait_nastavniki.set()
     elif message.text == "Оставить заявку":
         await message.answer('Заполни анкету и попади в команду "OCTOPUS"! \n Для начала напишите ФИО')
         await state.finish()
         await ZayavkaState.wait_FIO.set()
+
+@dp.message_handler(commands="team_octopus")
+async def cmd_octopus_team()
+
+@dp.message_handler(state=StartState.wait_nastavniki)
+async def nastavniki_info(message: types.Message, state: FSMContext):
+    if message.text == 'Наставник по Python':
+        await message.answer('Наставник по Python:'
+                             'Имя его  Петров Роман Ильич.'
+                             'Он наставник программирования на Python.'
+                             'Очень добрый и воспитанный молодой человек, который всегда отзывается и помогает, если вдруг появились какие-то сложности.')
 
 @dp.message_handler(state=StartState.wait_napravlenie)
 async def napravlenie_info(message: types.Message, state: FSMContext):
@@ -287,8 +303,6 @@ async def Confirmation(message: types.Message, state: FSMContext):
         await state.finish()
     elif message.text == 'Нет, не правильно':
         await message.answer("Если вы обнаружили ошибки в своей заявке, пожалуйста заполните её занового нажав команду /start")
-
-
 
 
 
