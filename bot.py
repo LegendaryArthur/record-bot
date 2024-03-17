@@ -1,9 +1,11 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup
+from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from config import TOKEN
 from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.types import InputFile
+
 import datebase
 ADMIN_ID = 1295289083
 
@@ -11,10 +13,14 @@ bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 import datetime
 
-start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку').add('Наставники всех направлений')
+start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку').add('Команда "OCTOPUS"')
 napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Коммерческий дизайн')
 zayavka_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Готов')
-nastavniki_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Наставник по Python')
+nastavniki_keyboard = InlineKeyboardMarkup()
+nastavnikPetrov = InlineKeyboardButton('Петров Роман Ильич', callback_data='PetrovRI')
+nastavnikSergey = InlineKeyboardButton('Сергей', callback_data='Sergey')
+nastavniki_keyboard.add(nastavnikPetrov)
+nastavniki_keyboard.add(nastavnikSergey)
 napravlenie_keyboard.add('Wed-разработка')
 napravlenie_keyboard.add('Unity')
 napravlenie_keyboard.add('Python')
@@ -71,24 +77,27 @@ async def napravlenie(message: types.Message, state: FSMContext):
     if message.text == "Направление":
         await message.answer("Информацию о каком направлении вы хотите узнать?", reply_markup=napravlenie_keyboard)
         await StartState.wait_napravlenie.set()
-    elif message.text == 'Наставники всех направлений':
+    elif message.text == 'Команда "OCTOPUS"':
         await message.answer("О каком наставнике вы хотите узнать?", reply_markup=nastavniki_keyboard)
-        await  StartState.wait_nastavniki.set()
+        await state.finish()
     elif message.text == "Оставить заявку":
         await message.answer('Заполни анкету и попади в команду "OCTOPUS"! \n Для начала напишите ФИО')
         await state.finish()
         await ZayavkaState.wait_FIO.set()
 
 @dp.message_handler(commands="team_octopus")
-async def cmd_octopus_team()
+async def cmd_octopus_team(message: types.Message):
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text="Команда октопус", callback_data="team_octopus "))
 
-@dp.message_handler(state=StartState.wait_nastavniki)
-async def nastavniki_info(message: types.Message, state: FSMContext):
-    if message.text == 'Наставник по Python':
-        await message.answer('Наставник по Python:'
-                             'Имя его  Петров Роман Ильич.'
-                             'Он наставник программирования на Python.'
-                             'Очень добрый и воспитанный молодой человек, который всегда отзывается и помогает, если вдруг появились какие-то сложности.')
+    await message.answer("Нажмите на кнопку, чтобы бот отправил информацию о Команде 'Octopus'", reply_markup=keyboard)
+
+@dp.callback_query_handler(text="PetrovRI")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\OCTO-8766_11zon.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\n", reply_markup=None)
+
+
+
 
 @dp.message_handler(state=StartState.wait_napravlenie)
 async def napravlenie_info(message: types.Message, state: FSMContext):
