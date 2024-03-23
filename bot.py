@@ -18,7 +18,11 @@ napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Комме
 zayavka_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Готов')
 nastavniki_keyboard = InlineKeyboardMarkup()
 nastavnikPetrov = InlineKeyboardButton('Петров Роман Ильич', callback_data='PetrovRI')
-nastavnikSergey = InlineKeyboardButton('Сергей', callback_data='Sergey')
+nastavnikSergey = InlineKeyboardButton('Короткий Сергей Андреевич', callback_data='SergeyKOR')
+nastavnikPavel = InlineKeyboardButton('Машкин Павел Юрьевич', callback_data='PavelMASH')
+nastavnikLexa = InlineKeyboardButton('Гарейнов', callback_data='LexaGAR')
+nastavnikAntonNI = InlineKeyboardButton('Савиновский Антон Николаевич', callback_data='AntonSAV')
+nastavnikSergey = InlineKeyboardButton('Короткий Сергей Андреевич', callback_data='')
 nastavniki_keyboard.add(nastavnikPetrov)
 nastavniki_keyboard.add(nastavnikSergey)
 napravlenie_keyboard.add('Wed-разработка')
@@ -94,7 +98,7 @@ async def cmd_octopus_team(message: types.Message):
 
 @dp.callback_query_handler(text="PetrovRI")
 async def send_team_octopus(call: types.CallbackQuery):
-    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\OCTO-8766_11zon.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\n", reply_markup=None)
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Роман Петров с очками.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\n", reply_markup=None)
 
 
 
