@@ -369,7 +369,7 @@ async def konec(message: types.Message, state: FSMContext):
 
     await ZayavkaState.wait_Confirmation.set()
 @dp.message_handler(state=ZayavkaState.wait_Confirmation)
-async def Confirmation(message: types.Message, state: FSMContext, call: types.CallbackQuery):
+async def Confirmation(message: types.Message, state: FSMContext):
     if message.text == 'Да, всё правильно':
 
         date = datetime.datetime.now()
@@ -379,8 +379,6 @@ async def Confirmation(message: types.Message, state: FSMContext, call: types.Ca
         await state.finish()
     elif message.text == 'Нет, не правильно':
         await message.answer("Если вы обнаружили ошибки в своей заявке, пожалуйста заполните её занового нажав команду /start")
-
-
 
 
 
