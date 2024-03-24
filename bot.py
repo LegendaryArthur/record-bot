@@ -17,14 +17,31 @@ start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направле
 napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Коммерческий дизайн')
 zayavka_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Готов')
 nastavniki_keyboard = InlineKeyboardMarkup()
-nastavnikPetrov = InlineKeyboardButton('Петров Роман Ильич', callback_data='PetrovRI')
-nastavnikSergey = InlineKeyboardButton('Короткий Сергей Андреевич', callback_data='SergeyKOR')
-nastavnikPavel = InlineKeyboardButton('Машкин Павел Юрьевич', callback_data='PavelMASH')
-nastavnikLexa = InlineKeyboardButton('Гарейнов', callback_data='LexaGAR')
-nastavnikAntonNI = InlineKeyboardButton('Савиновский Антон Николаевич', callback_data='AntonSAV')
-nastavnikSergey = InlineKeyboardButton('Короткий Сергей Андреевич', callback_data='')
+back_1 = InlineKeyboardMarkup(row_width=1)
+btn_1 = InlineKeyboardButton(text='Назад', callback_data='start')
+back_1.insert(btn_1)
+nastavnikPetrov = InlineKeyboardButton('Петров Роман Ильич | Python', callback_data='PetrovRI')
+nastavnikKorotki = InlineKeyboardButton('Короткий Сергей Андреевич | Unity', callback_data='ShortSA')
+nastavnikMashkin = InlineKeyboardButton('Машкин Павел Юрьевич | Гейм - Дизайнер', callback_data='MashkinPY')
+nastavnikGareinov = InlineKeyboardButton('Гарейнов Алексей', callback_data='GareinovA')
+nastavnikAntonNI = InlineKeyboardButton('Савиновский Антон Николаевич | Гейм - Дизайнер', callback_data='SavinovskyAN')
+nastavnikBaturovKS = InlineKeyboardButton('Батуров Константин Сергеевич | БПЛА ', callback_data='BaturovKS')
+nastavnikTinkovaNV = InlineKeyboardButton('Тинькова Наталья Владимировна | 2D-художник', callback_data='TinkovaNV')
+nastavnikSavinovskayaV = InlineKeyboardButton('Cавиноская Василина | Гейм - Дизайнер', callback_data='SavinovskayaV')
+nastavnikFerrary = InlineKeyboardButton('Энцо Болетти | 3D-художник', callback_data='Ferrary')
+nastavnikAntonA = InlineKeyboardButton('Адаменко Антон | 3D-художник', callback_data='AntonA')
+nastavnikKosoukhov = InlineKeyboardButton('Косоухов Константин | как продать детский труд', callback_data='Kids')
 nastavniki_keyboard.add(nastavnikPetrov)
-nastavniki_keyboard.add(nastavnikSergey)
+nastavniki_keyboard.add(nastavnikKorotki)
+nastavniki_keyboard.add(nastavnikMashkin)
+nastavniki_keyboard.add(nastavnikGareinov)
+nastavniki_keyboard.add(nastavnikAntonNI)
+nastavniki_keyboard.add(nastavnikBaturovKS)
+nastavniki_keyboard.add(nastavnikTinkovaNV)
+nastavniki_keyboard.add(nastavnikSavinovskayaV)
+nastavniki_keyboard.add(nastavnikFerrary)
+nastavniki_keyboard.add(nastavnikAntonA)
+nastavniki_keyboard.add(nastavnikKosoukhov)
 napravlenie_keyboard.add('Wed-разработка')
 napravlenie_keyboard.add('Unity')
 napravlenie_keyboard.add('Python')
@@ -97,11 +114,57 @@ async def cmd_octopus_team(message: types.Message):
     await message.answer("Нажмите на кнопку, чтобы бот отправил информацию о Команде 'Octopus'", reply_markup=keyboard)
 
 @dp.callback_query_handler(text="PetrovRI")
-async def send_team_octopus(call: types.CallbackQuery):
+async def send_team_octopus(call: types.CallbackQuery,):
     await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Роман Петров с очками.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\n", reply_markup=None)
+    await bot.send_message(call.from_user.id, 'Чтобы вернуться нажмите кнопку', reply_markup=back_1)
+
+
+@dp.callback_query_handler(text="GareinovA")
+async def send_team_octopus(call:types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Алексей Гарейнов с очками.jpg'), caption=f"")
+
+@dp.callback_query_handler(text="SavinovskyAN")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Антон Савиновский.jpg'), caption=f"Наставник по направление 'Геймдизайн':\nФИО: Савиновский Антон Николаевич\n", reply_markup=None)
 
 
 
+@dp.callback_query_handler(text="SavinovskayaV")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Василина Савиновская.jpg'), caption=f"Наставник по направление 'Геймдизайн':\nФИО: Савиновская Василина Николаевна\n", reply_markup=None)
+
+
+
+@dp.callback_query_handler(text="BaturovKS")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Конастантин Батурин.jpg'), caption=f"Наставник по БПЛА:\nФИО: Батурин Константин\n", reply_markup=None)
+
+@dp.callback_query_handler(text="Kids")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Константин Косоухов.jpg'), caption=f"Наставник по БПЛА:\nФИО: Косоухов Константин\n", reply_markup=None)
+
+@dp.callback_query_handler(text="MashkinPY")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Павел Машкин.jpg'), caption=f"Наставник по направление 'Геймдизайн':\nФИО: Машкин Павел Юрьевич\n", reply_markup=None)
+
+@dp.callback_query_handler(text="ShortSA")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Сергей Короткий с очками.jpg'), caption=f"Наставник по Unity:\nФИО: Короткий Сергей Андреевич\n", reply_markup=None)
+
+
+
+@dp.callback_query_handler(text="Ferrary")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Энцо Феррари.jpg'), caption=f"Наставник по Unity:\nФИО: Короткий Сергей Андреевич\n", reply_markup=None)
+
+@dp.callback_query_handler(text="AntonA")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Антон Адаменко.jpg'), caption=f"Наставник 3D-художников:\nФИО: Адаменко Антон \n", reply_markup=None)
+
+
+@dp.callback_query_handler(text="TinkovaNV")
+async def send_team_octopus(call: types.CallbackQuery):
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Наталья Тинькова.jpg'), caption=f"Наставник 2D-художников:\nФИО: Тинькова Наталья Владимировна\n", reply_markup=None)
 
 @dp.message_handler(state=StartState.wait_napravlenie)
 async def napravlenie_info(message: types.Message, state: FSMContext):
@@ -306,7 +369,7 @@ async def konec(message: types.Message, state: FSMContext):
 
     await ZayavkaState.wait_Confirmation.set()
 @dp.message_handler(state=ZayavkaState.wait_Confirmation)
-async def Confirmation(message: types.Message, state: FSMContext):
+async def Confirmation(message: types.Message, state: FSMContext, call: types.CallbackQuery):
     if message.text == 'Да, всё правильно':
 
         date = datetime.datetime.now()
@@ -316,6 +379,8 @@ async def Confirmation(message: types.Message, state: FSMContext):
         await state.finish()
     elif message.text == 'Нет, не правильно':
         await message.answer("Если вы обнаружили ошибки в своей заявке, пожалуйста заполните её занового нажав команду /start")
+
+
 
 
 
