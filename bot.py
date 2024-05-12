@@ -1,19 +1,22 @@
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from config import TOKEN
+from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import InputFile
+from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 import datebase
+from config import TOKEN
+import pandas as pd
+import matplotlib.pyplot as plt
+
 ADMIN_ID = 1295289083
 
 bot = Bot(TOKEN)
 dp = Dispatcher(bot=bot, storage=MemoryStorage())
 import datetime
 
-start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку').add('Команда "OCTOPUS"')
+start_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Направление').add('Оставить заявку').add('Команда "OCTOPUS"').add('Расписание')
 napravlenie_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Коммерческий дизайн')
 zayavka_keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add('Готов')
 nastavniki_keyboard = InlineKeyboardMarkup()
@@ -118,8 +121,7 @@ async def cmd_octopus_team(message: types.Message):
 
 @dp.callback_query_handler(text="PetrovRI")
 async def send_team_octopus(call: types.CallbackQuery,):
-    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Роман Петров с очками.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\n", reply_markup=None)
-    await bot.send_message(call.from_user.id, 'Чтобы вернуться нажмите кнопку', reply_markup=back_1)
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Роман Петров с очками.jpg'), caption=f"Наставник по Python:\nФИО: Петров Роман Ильич\nНаставник направления \"Python разработка\".\nОпыт работы педагогом дополнительно образования - 3 года.\n- Участвовал в национальном проекте \"Образование\" в качестве куратора направления \"Разработка ИИ\"\n- Имеет опыт работы преподавателем в рамках международного проекта \"Русско-Китайским образовательный союз\"\n- Более 100 выпускников\n- Победы учеников во всероссийских конкурсах\nРазработка приложений на Python направление, которое отлично подойдёт ребятам, которым интересно программирование и информационные технологии. Обучение проходит с нуля и рассматривает множество аспектов программирования. Python является отличным выбором для первого языка программирования из-за своей простоты и доступности. Помимо этого знание Python позволяет освоить множество профессий в IT, от тестировщика до инженера искусственного интеллекта, каждый найдет работу, интересную именно ему.", reply_markup=None)
 
 
 @dp.callback_query_handler(text="GareinovA")
@@ -128,7 +130,7 @@ async def send_team_octopus(call:types.CallbackQuery):
 
 @dp.callback_query_handler(text="SavinovskyAN")
 async def send_team_octopus(call: types.CallbackQuery):
-    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Антон Савиновский.jpg'), caption=f"Наставник по направление 'Геймдизайн':\nФИО: Савиновский Антон Николаевич\n", reply_markup=None)
+    await bot.send_photo(call.message.chat.id, photo=InputFile(r'C:\PYTHON\projects\record-bot\photos\Антон Савиновский.jpg'), caption=f"Наставник по направление 'Геймдизайн':\nФИО: Савиновский Антон Николаевич\nнаставник направления ", reply_markup=None)
 
 
 
